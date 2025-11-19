@@ -1,0 +1,222 @@
+[
+  {
+    "id": 1,
+    "nombre": "Café Americano",
+    "descripcion": "Café negro clásico preparado con agua caliente",
+    "precio": 2.5,
+    "categoria_id": 1,
+    "disponible": true,
+    "tamano": "mediano",
+    "ingredientes": ["Café molido", "Agua filtrada"],
+    "calorias": 5
+  },
+  {
+    "id": 2,
+    "nombre": "Cappuccino",
+    "descripcion": "Café expreso con leche vaporizada y espuma cremosa",
+    "precio": 3.5,
+    "categoria_id": 1,
+    "disponible": true,
+    "tamano": "grande",
+    "ingredientes": ["Café expreso", "Leche fresca", "Espuma de leche"],
+    "calorias": 120
+  },
+  {
+    "id": 3,
+    "nombre": "Latte",
+    "descripcion": "Café expreso con abundante leche vaporizada",
+    "precio": 4.0,
+    "categoria_id": 1,
+    "disponible": true,
+    "tamano": "grande",
+    "ingredientes": ["Café expreso", "Leche fresca", "Un toque de espuma"],
+    "calorias": 150
+  },
+  {
+    "id": 4,
+    "nombre": "Mocha",
+    "descripcion": "Café expreso con chocolate y leche vaporizada",
+    "precio": 4.5,
+    "categoria_id": 1,
+    "disponible": true,
+    "tamano": "grande",
+    "ingredientes": ["Café expreso", "Chocolate", "Leche", "Crema batida"],
+    "calorias": 290
+  },
+  {
+    "id": 5,
+    "nombre": "Té Verde",
+    "descripcion": "Té verde orgánico con propiedades antioxidantes",
+    "precio": 2.0,
+    "categoria_id": 1,
+    "disponible": true,
+    "tamano": "mediano",
+    "ingredientes": ["Hojas de té verde", "Agua caliente"],
+    "calorias": 2
+  },
+  {
+    "id": 6,
+    "nombre": "Frappé de Chocolate",
+    "descripcion": "Bebida fría de café con chocolate y hielo",
+    "precio": 5.5,
+    "categoria_id": 2,
+    "disponible": true,
+    "tamano": "grande",
+    "ingredientes": ["Café frío", "Chocolate", "Hielo", "Crema batida", "Jarabe de chocolate"],
+    "calorias": 320
+  },
+  {
+    "id": 7,
+    "nombre": "Jugo de Naranja",
+    "descripcion": "Jugo natural de naranjas recién exprimidas",
+    "precio": 3.0,
+    "categoria_id": 2,
+    "disponible": true,
+    "tamano": "mediano",
+    "ingredientes": ["Naranjas frescas"],
+    "calorias": 110
+  },
+  {
+    "id": 8,
+    "nombre": "Smoothie de Fresa",
+    "descripcion": "Batido cremoso de fresas con yogur",
+    "precio": 4.8,
+    "categoria_id": 2,
+    "disponible": true,
+    "tamano": "grande",
+    "ingredientes": ["Fresas frescas", "Yogur natural", "Miel", "Hielo"],
+    "calorias": 180
+  },
+  {
+    "id": 9,
+    "nombre": "Limonada",
+    "descripcion": "Refrescante limonada con menta",
+    "precio": 2.8,
+    "categoria_id": 2,
+    "disponible": true,
+    "tamano": "mediano",
+    "ingredientes": ["Limón fresco", "Agua", "Azúcar", "Menta", "Hielo"],
+    "calorias": 95
+  },
+  {
+    "id": 10,
+    "nombre": "Cheesecake de Fresas",
+    "descripcion": "Delicioso pastel de queso con fresas frescas",
+    "precio": 4.5,
+    "categoria_id": 3,
+    "disponible": false,
+    "tamano": null,
+    "ingredientes": ["Queso crema", "Fresas", "Galletas graham", "Azúcar", "Huevos"],
+    "calorias": 410
+  },
+  {
+    "id": 11,
+    "nombre": "Brownie de Chocolate",
+    "descripcion": "Brownie húmedo con nueces y chocolate",
+    "precio": 3.5,
+    "categoria_id": 3,
+    "disponible": true,
+    "tamano": null,
+    "ingredientes": ["Chocolate negro", "Mantequilla", "Huevos", "Harina", "Nueces"],
+    "calorias": 350
+  },
+  {
+    "id": 12,
+    "nombre": "Tiramisú",
+    "descripcion": "Postre italiano con café y mascarpone",
+    "precio": 5.0,
+    "categoria_id": 3,
+    "disponible": true,
+    "tamano": null,
+    "ingredientes": ["Mascarpone", "Café expreso", "Bizcochos", "Cacao", "Licor"],
+    "calorias": 450
+  },
+  {
+    "id": 13,
+    "nombre": "Muffin de Arándanos",
+    "descripcion": "Muffin esponjoso con arándanos frescos",
+    "precio": 2.8,
+    "categoria_id": 4,
+    "disponible": true,
+    "tamano": null,
+    "ingredientes": ["Harina", "Arándanos", "Huevos", "Mantequilla", "Azúcar"],
+    "calorias": 280
+  },
+  {
+    "id": 14,
+    "nombre": "Galletas de Avena",
+    "descripcion": "Galletas caseras de avena con pasas",
+    "precio": 2.2,
+    "categoria_id": 4,
+    "disponible": true,
+    "tamano": null,
+    "ingredientes": ["Avena", "Pasas", "Harina", "Mantequilla", "Canela"],
+    "calorias": 160
+  },
+  {
+    "id": 15,
+    "nombre": "Croissant de Mantequilla",
+    "descripcion": "Pan francés hojaldrado con mantequilla fresca",
+    "precio": 2.8,
+    "categoria_id": 5,
+    "disponible": true,
+    "tamano": null,
+    "ingredientes": ["Harina", "Mantequilla", "Huevos", "Levadura"],
+    "calorias": 231
+  },
+  {
+    "id": 16,
+    "nombre": "Tostada Francesa",
+    "descripcion": "Pan brioche con canela y jarabe de maple",
+    "precio": 4.2,
+    "categoria_id": 5,
+    "disponible": true,
+    "tamano": null,
+    "ingredientes": ["Pan brioche", "Huevos", "Leche", "Canela", "Jarabe de maple"],
+    "calorias": 320
+  },
+  {
+    "id": 17,
+    "nombre": "Sandwich Club",
+    "descripcion": "Sandwich de pollo, tocino, lechuga y tomate",
+    "precio": 6.5,
+    "categoria_id": 6,
+    "disponible": true,
+    "tamano": null,
+    "ingredientes": ["Pan integral", "Pollo a la parrilla", "Tocino", "Lechuga", "Tomate", "Mayonesa"],
+    "calorias": 520
+  },
+  {
+    "id": 18,
+    "nombre": "Ensalada César",
+    "descripcion": "Ensalada fresca con pollo, crutones y aderezo césar",
+    "precio": 5.8,
+    "categoria_id": 6,
+    "disponible": true,
+    "tamano": null,
+    "ingredientes": ["Lechuga romana", "Pollo", "Crutones", "Queso parmesano", "Aderezo césar"],
+    "calorias": 380
+  },
+  {
+    "id": 19,
+    "nombre": "Panini de Jamón y Queso",
+    "descripcion": "Panini tostado con jamón serrano y queso suizo",
+    "precio": 5.2,
+    "categoria_id": 6,
+    "disponible": true,
+    "tamano": null,
+    "ingredientes": ["Pan ciabatta", "Jamón serrano", "Queso suizo", "Tomate", "Rúcula"],
+    "calorias": 420
+  },
+  {
+    "id": 20,
+    "nombre": "Wrap Vegetariano",
+    "descripcion": "Wrap con vegetales frescos y hummus",
+    "precio": 4.8,
+    "categoria_id": 6,
+    "disponible": true,
+    "tamano": null,
+    "ingredientes": ["Tortilla integral", "Hummus", "Pepino", "Zanahoria", "Lechuga", "Pimiento"],
+    "calorias": 290
+  }
+]

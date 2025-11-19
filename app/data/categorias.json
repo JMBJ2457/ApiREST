@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "nombre": "Bebidas Calientes",
+    "descripcion": "Cafés, tés y bebidas calientes",
+    "tipo": "bebidas_calientes",
+    "activa": true
+  },
+  {
+    "id": 2,
+    "nombre": "Bebidas Frías",
+    "descripcion": "Jugos, batidos y bebidas refrescantes",
+    "tipo": "bebidas_frias",
+    "activa": true
+  },
+  {
+    "id": 3,
+    "nombre": "Postres",
+    "descripcion": "Pasteles, galletas y dulces",
+    "tipo": "postres",
+    "activa": true
+  },
+  {
+    "id": 4,
+    "nombre": "Snacks",
+    "descripcion": "Bocadillos y aperitivos",
+    "tipo": "snacks",
+    "activa": true
+  },
+  {
+    "id": 5,
+    "nombre": "Desayunos",
+    "descripcion": "Panes, croissants y opciones matutinas",
+    "tipo": "desayunos",
+    "activa": true
+  },
+  {
+    "id": 6,
+    "nombre": "Almuerzo",
+    "descripcion": "Sandwiches, ensaladas y comidas principales",
+    "tipo": "almuerzo",
+    "activa": true
+  }
+]
