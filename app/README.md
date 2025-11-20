@@ -25,13 +25,15 @@ app/
 Variables de entorno (via `.env` o entorno):
 
 - `REPO_BACKEND`: `memory` (por defecto) o `file`.
+- `CIRCUIT_BREAKER_FAILURE_THRESHOLD`: Número de fallos antes de abrir el circuito (default: 3).
+- `CIRCUIT_BREAKER_RECOVERY_TIMEOUT`: Segundos antes de intentar recuperación (default: 30.0).
 
 Ejemplo `.env`:
 
 ```
-
 REPO_BACKEND=file
-
+CIRCUIT_BREAKER_FAILURE_THRESHOLD=5
+CIRCUIT_BREAKER_RECOVERY_TIMEOUT=60.0
 ```
 
 ## Ejecutar localmente
@@ -74,13 +76,80 @@ REPO_BACKEND=file uvicorn main:app --reload
 - `GET /api/v1/productos/por-tipo?tipo=bebidas_calientes|postres|...`
 - `GET /api/v1/categorias/`, `GET /api/v1/categorias/{id}`
 - `POST /api/v1/categorias/`, `PUT /api/v1/categorias/{id}`, `DELETE /api/v1/categorias/{id}`
+- `GET /api/v1/circuit-breaker/estado` - Estado de los Circuit Breakers (solo con `REPO_BACKEND=file`)
+
+## Circuit Breaker
+
+El proyecto implementa el patrón **Circuit Breaker** para proteger las operaciones de archivo en `FileRepository`.
+
+### ¿Qué es?
+
+El Circuit Breaker protege contra fallos en cascada:
+- **CLOSED**: Funciona normalmente, permite todas las llamadas
+- **OPEN**: Bloqueado después de muchos fallos, responde rápido sin intentar
+- **HALF_OPEN**: Estado de prueba, permite algunas llamadas para verificar recuperación
+
+### Implementación
+
+- Protege operaciones de lectura/escritura de archivos JSON
+- Se activa automáticamente cuando `REPO_BACKEND=file`
+- Configurable mediante variables de entorno
+- Endpoint `/api/v1/circuit-breaker/estado` para monitoreo
+
+### Ejemplo de uso
+
+```python
+from core.circuit_breaker import CircuitBreaker, circuit_breaker
+
+# Uso directo
+breaker = CircuitBreaker(failure_threshold=3, recovery_timeout=30.0)
+result = breaker.call(mi_funcion_riesgosa, arg1, arg2)
+
+# Como decorador
+@circuit_breaker(failure_threshold=5, recovery_timeout=60.0)
+def llamar_servicio_externo():
+    # código que puede fallar
+    pass
+```
 
 ## Notas de diseño
 
 - `/api` solo HTTP (routers, schemas). El core no depende de la API.
 - `/services` depende de `/repositories` (interfaces), no de implementaciones concretas.
 - Repositorio seleccionable por `REPO_BACKEND` sin cambiar código.
+- Circuit Breaker protege operaciones de archivo automáticamente.
 - Fácil de extender con un `repositories/database_repository.py`.
+
+## Cómo Probar el Circuit Breaker
+
+### Método 1: Script de Prueba Automático
+
+```bash
+python test_circuit_breaker.py
+```
+
+Este script demuestra todos los estados del Circuit Breaker automáticamente.
+
+### Método 2: Endpoints de Prueba
+
+1. **Ver estado del Circuit Breaker:**
+   ```bash
+   GET /api/v1/circuit-breaker/estado
+   ```
+
+2. **Simular fallos para abrir el circuito:**
+   ```bash
+   POST /api/v1/circuit-breaker/test?accion=simular_fallos
+   ```
+
+3. **Resetear manualmente:**
+   ```bash
+   POST /api/v1/circuit-breaker/test?accion=reset
+   ```
+
+**Nota:** Los endpoints de prueba solo funcionan con `REPO_BACKEND=file`.
+
+Ver `GUIA_PRUEBAS_CIRCUIT_BREAKER.md` para instrucciones detalladas.
 
 ## Futuras extensiones
 

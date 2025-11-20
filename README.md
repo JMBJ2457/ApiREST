@@ -7,18 +7,34 @@ API REST construida con FastAPI siguiendo principios SOLID y arquitectura limpia
 ```
 
 app/
-├── api/                 # Capa HTTP
-│   ├── routers/         # Endpoints (FastAPI Routers)
-│   └── schemas/         # Esquemas Pydantic (I/O)
-├── core/                # Configuración y wiring
-│   ├── config.py        # Settings (pydantic-settings, .env)
-│   └── dependencies.py  # Inyección de dependencias
-├── domain/              # Modelos de dominio (dataclasses, enums)
-├── repositories/        # Contratos e implementaciones de persistencia
-├── services/            # Lógica de negocio / casos de uso
-├── data/                # Datos JSON (cuando REPO_BACKEND=file)
-├── main.py              # Instancia FastAPI + montaje de routers
-└── requirements.txt     # Dependencias de la app
+├── api/                     # Capa HTTP (FastAPI)
+│   ├── routers/             # Endpoints / controladores
+│   └── schemas/             # Esquemas Pydantic (entrada / salida)
+│
+├── core/                    # Configuración y wiring
+│   ├── config.py            # Settings (pydantic-settings, variables .env)
+│   └── dependencies.py      # Inyección de dependencias
+│
+├── domain/                  # Modelos de dominio (dataclasses, enums)
+│
+├── repositories/            # Contratos + persistencia (repo pattern)
+│                           # Implementaciones según backend (SQLite / JSON)
+│
+├── services/                # Lógica de negocio (casos de uso)
+│                           # Orquestan repositorios y modelos
+│
+├── data/                    # Datos JSON (modo archivo cuando REPO_BACKEND=file)
+│
+├── frontend/                # ***Nueva: Interfaz gráfica moderna***
+│   ├── index.html           # Vista principal del menú
+│   ├── admin.html           # Panel de administración (CRUD)
+│   ├── styles.css           # Estilos modernos (dark UI)
+│   ├── app.js               # Lógica del cliente (lista productos)
+│   └── admin.js             # CRUD de productos (UI administrador)
+│
+├── main.py                  # Instancia FastAPI + routers + montaje de /ui
+│
+└── requirements.txt         # Dependencias del proyecto
 ```
 
 ## Configuración
@@ -117,6 +133,35 @@ La API quedará en `http://localhost:8000` y los endpoints bajo `/api/v1`.
 - `/services` depende de `/repositories` (interfaces), no de implementaciones concretas.
 - Repositorio seleccionable por `REPO_BACKEND` sin cambiar código.
 - Fácil de extender con un `repositories/database_repository.py`.
+
+
+## Acceso al frontend
+
+La aplicación incluye una UI moderna que se monta automáticamente desde FastAPI.
+
+- Menú principal (vista del cliente)
+- http://127.0.0.1:8000/ui
+
+
+- Permite:
+
+- Ver el menú completo
+
+- Buscar productos
+
+- Filtrar por categoría
+
+## Panel de Administración (CRUD de productos)
+- http://127.0.0.1:8000/ui/admin.html
+
+
+- Desde esta vista puedes:
+
+- Crear productos
+
+- Editar productos
+
+- Eliminar productos
 
 ## Futuras extensiones
 
