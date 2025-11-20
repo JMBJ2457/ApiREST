@@ -12,8 +12,35 @@ let flatProducts = [];
 async function loadMenu() {
   try {
     grid.innerHTML = "<p>Cargando...</p>";
-    const res = await fetch(`${API_BASE}/menu`);
-    fullMenu = await res.json();
+    // Cambiar de /menu a /productos
+    const res = await fetch(`${API_BASE}/productos`);
+    if (!res.ok) throw new Error("Error al cargar productos");
+    const productos = await res.json();
+    
+    // Obtener categorías para agrupar
+    const catRes = await fetch(`${API_BASE}/categorias`);
+    if (!catRes.ok) throw new Error("Error al cargar categorías");
+    const categorias = await catRes.json();
+    
+    // Crear mapa de categorías
+    const categoriasMap = new Map();
+    categorias.forEach(c => {
+      categoriasMap.set(c.id, c.nombre || c.descripcion || `Cat ${c.id}`);
+    });
+    
+    // Agrupar productos por categoría
+    fullMenu = {};
+    productos.forEach(p => {
+      const catNombre = categoriasMap.get(p.categoria_id || p.id_categoria) || "Sin categoría";
+      if (!fullMenu[catNombre]) {
+        fullMenu[catNombre] = [];
+      }
+      fullMenu[catNombre].push({
+        ...p,
+        _categoriaNombre: catNombre
+      });
+    });
+    
     buildFlatProducts();
     buildCategoryFilter();
     renderProducts();
@@ -48,6 +75,8 @@ function renderProducts() {
   const term = searchInput.value.toLowerCase();
   const cat = categorySelect.value;
 
+  
+
   const filtered = flatProducts.filter((p) => {
     return (
       (cat === "__all__" || p._categoriaNombre === cat) &&
@@ -57,6 +86,8 @@ function renderProducts() {
     );
   });
 
+  console.log(filtered);
+
   totalProductsSpan.textContent = filtered.length;
   grid.innerHTML = "";
 
@@ -64,13 +95,17 @@ function renderProducts() {
     const html = `
       <article class="product-card">
         <header class="product-header">
-          <h3 class="product-name">${p.nombre}</h3>
-          <span class="product-badge">${p._categoriaNombre}</span>
+          <div class="product-badge-container">
+            <span class="product-badge">${p._categoriaNombre}</span>
+          </div>
+          <div class="product-name-container">
+            <h3 class="product-name">${p.nombre}</h3>
+          </div>
         </header>
         <p class="product-description">${p.descripcion}</p>
         <div class="product-meta">
           <span class="product-price">$${p.precio}</span>
-          <span>${p.disponible ? "Disponible" : "No disponible"}</span>
+          <span class="${p.disponible ? "product-available" : "product-unavailable"}">${p.disponible ? "Disponible" : "No disponible"}</span>
         </div>
       </article>
     `;

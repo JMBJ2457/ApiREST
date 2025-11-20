@@ -46,26 +46,26 @@
     <main class="content">
       <!-- Formulario -->
       <section style="margin-bottom:18px;">
-        <form id="product-form" style="display:grid; gap:10px; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); align-items:flex-end;">
+        <form id="product-form">
           <input type="hidden" id="product-id" />
 
           <div>
-            <label for="nombre">Nombre</label>
+            <label for="nombre">Nombre <span class="required-indicator">*</span></label>
             <input id="nombre" type="text" placeholder="Café latte" required />
           </div>
 
           <div>
-            <label for="descripcion">Descripción</label>
+            <label for="descripcion">Descripción <span class="required-indicator">*</span></label>
             <input id="descripcion" type="text" placeholder="Bebida caliente con leche" required />
           </div>
 
           <div>
-            <label for="precio">Precio</label>
+            <label for="precio">Precio <span class="required-indicator">*</span></label>
             <input id="precio" type="number" step="0.01" min="0" placeholder="35.50" required />
           </div>
 
           <div>
-            <label for="categoria">Categoría</label>
+            <label for="categoria">Categoría <span class="required-indicator">*</span></label>
             <select id="categoria" required>
               <option value="">Selecciona categoría</option>
             </select>
@@ -79,9 +79,9 @@
             </select>
           </div>
 
-          <div style="display:flex; gap:8px;">
+          <div class="form-buttons-container">
             <button type="submit">Guardar</button>
-            <button type="button" id="cancel-edit-btn" style="background:#111827;border-radius:999px;border:1px solid #4b5563;color:#e5e7eb;padding:8px 14px;cursor:pointer;">
+            <button type="button" id="cancel-edit-btn" class="cancel-edit-btn">
               Cancelar
             </button>
           </div>
