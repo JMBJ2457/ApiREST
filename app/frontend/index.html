@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cafetería – Menú</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div>
+        <h1>Cafetería API</h1>
+        <p>Dashboard moderno para visualizar el menú de la cafetería.</p>
+      </div>
+
+      <div style="display:flex; gap:12px; align-items:center;">
+        <button
+          onclick="window.location.href='/ui/admin.html'"
+          style="
+            border-radius:999px;
+            border:none;
+            background:linear-gradient(135deg,#38bdf8,#6366f1);
+            color:#020617;
+            padding:10px 18px;
+            font-weight:600;
+            font-size:0.9rem;
+            cursor:pointer;
+            box-shadow:0 12px 28px rgba(99,102,241,0.55);
+          "
+        >
+          Admin
+        </button>
+
+        <div class="header-badge">
+          <span id="total-products">0</span>
+          <small>productos visibles</small>
+        </div>
+      </div>
+    </header>
+
+    <section class="toolbar">
+      <input
+        type="search"
+        id="search-input"
+        placeholder="Buscar por nombre o descripción..."
+      />
+
+      <select id="category-filter">
+        <option value="__all__">Todas las categorías</option>
+      </select>
+
+      <button id="reload-btn">Actualizar menú</button>
+    </section>
+
+    <main class="content">
+      <div id="products-grid" class="grid"></div>
+    </main>
+
+    <footer class="app-footer">
+      <span>Frontend Menú · FastAPI · Rama feature/frontend-ui</span>
+      <a href="/docs" target="_blank">Ver Swagger</a>
+    </footer>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+

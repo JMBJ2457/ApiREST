@@ -9,8 +9,12 @@ class Settings(BaseSettings):
     APP_NAME: str = "Cafetería API"
     APP_VERSION: str = "1.0.0"
 
-    # Selección del backend de repositorio: memory | file | (futuro: database)
-    REPO_BACKEND: Literal["memory", "file"] = "memory"
+    # Selección del backend de repositorio: memory | file | database
+    REPO_BACKEND: Literal["memory", "file", "database"] = "memory"
+    
+    # Configuración del Circuit Breaker (opcional)
+    CIRCUIT_BREAKER_FAILURE_THRESHOLD: int = 3
+    CIRCUIT_BREAKER_RECOVERY_TIMEOUT: float = 30.0
 
 
 @lru_cache(maxsize=1)

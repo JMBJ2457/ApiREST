@@ -21,6 +21,12 @@ app/
 ├── repositories/        # Contratos e implementaciones de persistencia
 ├── services/            # Lógica de negocio / casos de uso
 ├── data/                # Datos JSON (cuando REPO_BACKEND=file) o SQLite (cuando REPO_BACKEND=database)
+├── frontend/                # ***Nueva: Interfaz gráfica moderna***
+│   ├── index.html           # Vista principal del menú
+│   ├── admin.html           # Panel de administración (CRUD)
+│   ├── styles.css           # Estilos modernos (dark UI)
+│   ├── app.js               # Lógica del cliente (lista productos)
+│   └── admin.js             # CRUD de productos (UI administrador)
 ├── main.py              # Instancia FastAPI + montaje de routers
 └── requirements.txt     # Dependencias de la app
 ```
@@ -79,6 +85,51 @@ REPO_BACKEND=database uvicorn main:app --reload
 
 - Swagger UI: http://127.0.0.1:8000/docs
 - OpenAPI JSON: http://127.0.0.1:8000/openapi.json
+
+## Docker
+
+### Archivos
+
+- `app/Dockerfile`: imagen de la API (FastAPI + Uvicorn).
+- `app/docker-compose.yml`: orquestación del servicio.
+- `app/.dockerignore`: optimiza el contexto de build.
+- `app/.env`: variables (ej. `REPO_BACKEND=file`).
+
+### Construir y ejecutar
+
+Desde la carpeta `app/`:
+
+```
+docker compose build
+docker compose up
+```
+
+Por defecto usa `REPO_BACKEND=memory`. Para usar archivos JSON o base de datos:
+
+1) Crear/editar `app/.env`:
+
+```
+REPO_BACKEND=file
+# o
+REPO_BACKEND=database
+```
+
+2) Levantar:
+
+```
+docker compose up --build
+```
+
+La API quedará en `http://localhost:8000` y los endpoints bajo `/api/v1`.
+
+## Notas de diseño
+
+- `/api` solo HTTP (routers, schemas). El core no depende de la API.
+- `/services` depende de `/repositories` (interfaces), no de implementaciones concretas.
+- Repositorio seleccionable por `REPO_BACKEND` sin cambiar código.
+- Base de datos SQLite implementada con SQLAlchemy en `db/models.py` y `repositories/database_repository.py`.
+- Circuit Breaker protege automáticamente operaciones de archivo y base de datos.
+- Arquitectura limpia: dominio independiente de infraestructura.
 
 ## Endpoints principales
 
@@ -179,81 +230,38 @@ def llamar_servicio_externo():
 - **FileRepository**: Protege operaciones de lectura/escritura de archivos JSON
 - **DatabaseRepository**: Protege operaciones de base de datos contra `SQLAlchemyError`, `OperationalError` y `TimeoutError`
 
-## Docker
 
-### Archivos
+## Acceso al Frontend
 
-- `app/Dockerfile`: imagen de la API (FastAPI + Uvicorn).
-- `app/docker-compose.yml`: orquestación del servicio.
-- `app/.dockerignore`: optimiza el contexto de build.
-- `app/.env`: variables (ej. `REPO_BACKEND=file`).
+La aplicación incluye una UI moderna que se monta automáticamente desde FastAPI.
 
-### Construir y ejecutar
+- Menú principal (vista del cliente)
+- http://127.0.0.1:8000/ui
 
-Desde la carpeta `app/`:
 
-```
-docker compose build
-docker compose up
-```
+- Permite:
 
-Por defecto usa `REPO_BACKEND=memory`. Para usar archivos JSON o base de datos:
+- Ver el menú completo
 
-1) Crear/editar `app/.env`:
+- Buscar productos
 
-```
-REPO_BACKEND=file
-# o
-REPO_BACKEND=database
-```
+- Filtrar por categoría
 
-2) Levantar:
+## Panel de Administración (CRUD de productos)
+- http://127.0.0.1:8000/ui/admin.html
 
-```
-docker compose up --build
-```
 
-La API quedará en `http://localhost:8000` y los endpoints bajo `/api/v1`.
+- Desde esta vista puedes:
 
-## Notas de diseño
+- Crear productos
 
-- `/api` solo HTTP (routers, schemas). El core no depende de la API.
-- `/services` depende de `/repositories` (interfaces), no de implementaciones concretas.
-- Repositorio seleccionable por `REPO_BACKEND` sin cambiar código.
-- Base de datos SQLite implementada con SQLAlchemy en `db/models.py` y `repositories/database_repository.py`.
-- Circuit Breaker protege automáticamente operaciones de archivo y base de datos.
-- Arquitectura limpia: dominio independiente de infraestructura.
+- Editar productos
 
-## Estructura de directorios
-
-```
-app/
-├── api/                    # Capa HTTP
-│   ├── routers/            # Endpoints (FastAPI Routers)
-│   └── schemas/            # Esquemas Pydantic (I/O)
-├── core/                   # Configuración y wiring
-│   ├── config.py           # Settings (pydantic-settings, .env)
-│   ├── dependencies.py     # Inyección de dependencias
-│   └── circuit_breaker.py  # Implementación del Circuit Breaker
-├── db/                     # Base de datos
-│   ├── models.py           # Modelos SQLAlchemy
-│   └── session.py          # Configuración de sesión SQLite
-├── domain/                 # Modelos de dominio (dataclasses, enums)
-├── repositories/           # Contratos e implementaciones de persistencia
-│   ├── interfaces.py      # Interfaces de repositorios
-│   ├── memory_repository.py
-│   ├── file_repository.py
-│   └── database_repository.py  # Repositorio con SQLite y Circuit Breaker
-├── services/               # Lógica de negocio / casos de uso
-├── data/                   # Datos JSON (cuando REPO_BACKEND=file)
-│   └── cafeteria.db       # Base de datos SQLite (cuando REPO_BACKEND=database)
-├── main.py                 # Instancia FastAPI + montaje de routers
-└── requirements.txt        # Dependencias de la app
-```
+- Eliminar productos
 
 ## Futuras extensiones
 
-- `core/logging.py`, `core/errors.py`, middlewares.
 - Tests unitarios y de integración.
 - Migraciones de base de datos con Alembic.
 - Soporte para otras bases de datos (PostgreSQL, MySQL).
+
