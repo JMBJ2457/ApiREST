@@ -7,18 +7,42 @@ API REST construida con FastAPI siguiendo principios SOLID y arquitectura limpia
 ```
 
 app/
-├── api/                 # Capa HTTP
-│   ├── routers/         # Endpoints (FastAPI Routers)
-│   └── schemas/         # Esquemas Pydantic (I/O)
-├── core/                # Configuración y wiring
-│   ├── config.py        # Settings (pydantic-settings, .env)
-│   └── dependencies.py  # Inyección de dependencias
-├── domain/              # Modelos de dominio (dataclasses, enums)
-├── repositories/        # Contratos e implementaciones de persistencia
-├── services/            # Lógica de negocio / casos de uso
-├── data/                # Datos JSON (cuando REPO_BACKEND=file)
-├── main.py              # Instancia FastAPI + montaje de routers
-└── requirements.txt     # Dependencias de la app
+├── api/                          # Capa HTTP (FastAPI)
+│   ├── routers/                  # Endpoints / controladores
+│   └── schemas/                  # Esquemas Pydantic (I/O)
+│
+├── core/                         # Configuración, Circuit Breaker y wiring
+│   ├── config.py                 # Config global (pydantic-settings, .env)
+│   ├── circuit_breaker.py        # Implementación de Circuit Breaker
+│   └── dependencies.py           # Inyección de dependencias (DB, repos, servicios)
+│
+├── domain/                       # Modelos del dominio (dataclasses, enums)
+│
+├── repositories/                 # Contratos + implementaciones (Repository Pattern)
+│   ├── base_repository.py        # Clase base
+│   ├── sqlite_repository.py      # Persistencia en SQLite
+│   └── json_repository.py        # Persistencia en archivos JSON (modo alterno)
+│
+├── services/                     # Lógica de negocio y casos de uso
+│   ├── productos_service.py      # Reglas para productos
+│   ├── categorias_service.py     # Reglas para categorías
+│   └── menu_service.py           # Ensamblaje del menú
+│
+├── data/                         # Archivos JSON cuando REPO_BACKEND=file
+│   └── menu.json
+│
+├── frontend/                     # Interfaz gráfica moderna integrada al backend
+│   ├── index.html                # Vista principal del menú
+│   ├── admin.html                # Panel de administrador (CRUD)
+│   ├── styles.css                # Estilos (dark mode, diseño moderno)
+│   ├── app.js                    # Lógica del frontend (consulta menú)
+│   └── admin.js                  # CRUD de productos desde la UI
+│
+├── main.py                       # Inicialización FastAPI + CORS + montaje de /ui
+│
+├── database.db                   # Archivo SQLite generado en runtime
+│
+└── requirements.txt              # Dependencias del proyecto
 ```
 
 ## Configuración
