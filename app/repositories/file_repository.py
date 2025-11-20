@@ -4,33 +4,61 @@ from typing import List, Optional
 from decimal import Decimal
 from domain.models import Producto, Categoria, TipoCategoria, TamanoProducto
 from repositories.interfaces import IProductoRepository, ICategoriaRepository
+from core.circuit_breaker import CircuitBreaker, CircuitBreakerError
+from core.config import get_settings
 
 
 class ProductoFileRepository(IProductoRepository):
     def __init__(self, archivo_path: str = "data/productos.json"):
         self.archivo_path = archivo_path
         self._productos: List[Producto] = []
+        # Circuit Breaker para proteger operaciones de archivo
+        settings = get_settings()
+        self._circuit_breaker = CircuitBreaker(
+            failure_threshold=settings.CIRCUIT_BREAKER_FAILURE_THRESHOLD,
+            recovery_timeout=settings.CIRCUIT_BREAKER_RECOVERY_TIMEOUT,
+            expected_exception=Exception,
+            name="ProductoFileRepository"
+        )
         self._cargar_desde_archivo()
 
     def _cargar_desde_archivo(self):
-        try:
+        """Carga productos desde archivo protegido por Circuit Breaker"""
+        def _leer_archivo():
             if os.path.exists(self.archivo_path):
                 with open(self.archivo_path, 'r', encoding='utf-8') as archivo:
                     datos = json.load(archivo)
-                    self._productos = [self._dict_a_producto(item) for item in datos]
-            else:
-                self._productos = []
+                    return [self._dict_a_producto(item) for item in datos]
+            return []
+        
+        try:
+            self._productos = self._circuit_breaker.call(_leer_archivo)
+        except CircuitBreakerError:
+            # Si el circuito está abierto, usar datos en memoria como fallback
+            # o mantener los datos actuales
+            pass
         except Exception:
-            self._productos = []
+            # Si hay otro error, mantener lista vacía o datos actuales
+            if not self._productos:
+                self._productos = []
 
     def _guardar_en_archivo(self):
-        try:
+        """Guarda productos en archivo protegido por Circuit Breaker"""
+        def _escribir_archivo():
             os.makedirs(os.path.dirname(self.archivo_path), exist_ok=True)
             with open(self.archivo_path, 'w', encoding='utf-8') as archivo:
                 datos = [self._producto_a_dict(p) for p in self._productos]
                 json.dump(datos, archivo, indent=2, ensure_ascii=False)
-        except Exception:
-            pass
+        
+        try:
+            self._circuit_breaker.call(_escribir_archivo)
+        except CircuitBreakerError:
+            # Si el circuito está abierto, no podemos guardar
+            # Los datos quedan solo en memoria
+            raise
+        except Exception as e:
+            # Re-lanzar para que el Circuit Breaker lo capture
+            raise
 
     def _dict_a_producto(self, data: dict) -> Producto:
         tamano = None
@@ -122,27 +150,51 @@ class CategoriaFileRepository(ICategoriaRepository):
     def __init__(self, archivo_path: str = "data/categorias.json"):
         self.archivo_path = archivo_path
         self._categorias: List[Categoria] = []
+        # Circuit Breaker para proteger operaciones de archivo
+        settings = get_settings()
+        self._circuit_breaker = CircuitBreaker(
+            failure_threshold=settings.CIRCUIT_BREAKER_FAILURE_THRESHOLD,
+            recovery_timeout=settings.CIRCUIT_BREAKER_RECOVERY_TIMEOUT,
+            expected_exception=Exception,
+            name="CategoriaFileRepository"
+        )
         self._cargar_desde_archivo()
 
     def _cargar_desde_archivo(self):
-        try:
+        """Carga categorías desde archivo protegido por Circuit Breaker"""
+        def _leer_archivo():
             if os.path.exists(self.archivo_path):
                 with open(self.archivo_path, 'r', encoding='utf-8') as archivo:
                     datos = json.load(archivo)
-                    self._categorias = [self._dict_a_categoria(item) for item in datos]
-            else:
-                self._categorias = []
+                    return [self._dict_a_categoria(item) for item in datos]
+            return []
+        
+        try:
+            self._categorias = self._circuit_breaker.call(_leer_archivo)
+        except CircuitBreakerError:
+            # Si el circuito está abierto, mantener datos actuales
+            pass
         except Exception:
-            self._categorias = []
+            # Si hay otro error, mantener lista vacía o datos actuales
+            if not self._categorias:
+                self._categorias = []
 
     def _guardar_en_archivo(self):
-        try:
+        """Guarda categorías en archivo protegido por Circuit Breaker"""
+        def _escribir_archivo():
             os.makedirs(os.path.dirname(self.archivo_path), exist_ok=True)
             with open(self.archivo_path, 'w', encoding='utf-8') as archivo:
                 datos = [self._categoria_a_dict(c) for c in self._categorias]
                 json.dump(datos, archivo, indent=2, ensure_ascii=False)
-        except Exception:
-            pass
+        
+        try:
+            self._circuit_breaker.call(_escribir_archivo)
+        except CircuitBreakerError:
+            # Si el circuito está abierto, no podemos guardar
+            raise
+        except Exception as e:
+            # Re-lanzar para que el Circuit Breaker lo capture
+            raise
 
     def _dict_a_categoria(self, data: dict) -> Categoria:
         return Categoria(
