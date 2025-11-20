@@ -7,42 +7,34 @@ API REST construida con FastAPI siguiendo principios SOLID y arquitectura limpia
 ```
 
 app/
-├── api/                          # Capa HTTP (FastAPI)
-│   ├── routers/                  # Endpoints / controladores
-│   └── schemas/                  # Esquemas Pydantic (I/O)
+├── api/                     # Capa HTTP (FastAPI)
+│   ├── routers/             # Endpoints / controladores
+│   └── schemas/             # Esquemas Pydantic (entrada / salida)
 │
-├── core/                         # Configuración, Circuit Breaker y wiring
-│   ├── config.py                 # Config global (pydantic-settings, .env)
-│   ├── circuit_breaker.py        # Implementación de Circuit Breaker
-│   └── dependencies.py           # Inyección de dependencias (DB, repos, servicios)
+├── core/                    # Configuración y wiring
+│   ├── config.py            # Settings (pydantic-settings, variables .env)
+│   └── dependencies.py      # Inyección de dependencias
 │
-├── domain/                       # Modelos del dominio (dataclasses, enums)
+├── domain/                  # Modelos de dominio (dataclasses, enums)
 │
-├── repositories/                 # Contratos + implementaciones (Repository Pattern)
-│   ├── base_repository.py        # Clase base
-│   ├── sqlite_repository.py      # Persistencia en SQLite
-│   └── json_repository.py        # Persistencia en archivos JSON (modo alterno)
+├── repositories/            # Contratos + persistencia (repo pattern)
+│                           # Implementaciones según backend (SQLite / JSON)
 │
-├── services/                     # Lógica de negocio y casos de uso
-│   ├── productos_service.py      # Reglas para productos
-│   ├── categorias_service.py     # Reglas para categorías
-│   └── menu_service.py           # Ensamblaje del menú
+├── services/                # Lógica de negocio (casos de uso)
+│                           # Orquestan repositorios y modelos
 │
-├── data/                         # Archivos JSON cuando REPO_BACKEND=file
-│   └── menu.json
+├── data/                    # Datos JSON (modo archivo cuando REPO_BACKEND=file)
 │
-├── frontend/                     # Interfaz gráfica moderna integrada al backend
-│   ├── index.html                # Vista principal del menú
-│   ├── admin.html                # Panel de administrador (CRUD)
-│   ├── styles.css                # Estilos (dark mode, diseño moderno)
-│   ├── app.js                    # Lógica del frontend (consulta menú)
-│   └── admin.js                  # CRUD de productos desde la UI
+├── frontend/                # ***Nueva: Interfaz gráfica moderna***
+│   ├── index.html           # Vista principal del menú
+│   ├── admin.html           # Panel de administración (CRUD)
+│   ├── styles.css           # Estilos modernos (dark UI)
+│   ├── app.js               # Lógica del cliente (lista productos)
+│   └── admin.js             # CRUD de productos (UI administrador)
 │
-├── main.py                       # Inicialización FastAPI + CORS + montaje de /ui
+├── main.py                  # Instancia FastAPI + routers + montaje de /ui
 │
-├── database.db                   # Archivo SQLite generado en runtime
-│
-└── requirements.txt              # Dependencias del proyecto
+└── requirements.txt         # Dependencias del proyecto
 ```
 
 ## Configuración
@@ -141,6 +133,35 @@ La API quedará en `http://localhost:8000` y los endpoints bajo `/api/v1`.
 - `/services` depende de `/repositories` (interfaces), no de implementaciones concretas.
 - Repositorio seleccionable por `REPO_BACKEND` sin cambiar código.
 - Fácil de extender con un `repositories/database_repository.py`.
+
+
+## Acceso al frontend
+
+La aplicación incluye una UI moderna que se monta automáticamente desde FastAPI.
+
+- Menú principal (vista del cliente)
+- http://127.0.0.1:8000/ui
+
+
+- Permite:
+
+- Ver el menú completo
+
+- Buscar productos
+
+- Filtrar por categoría
+
+## Panel de Administración (CRUD de productos)
+- http://127.0.0.1:8000/ui/admin.html
+
+
+- Desde esta vista puedes:
+
+- Crear productos
+
+- Editar productos
+
+- Eliminar productos
 
 ## Futuras extensiones
 
