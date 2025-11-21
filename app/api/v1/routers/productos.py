@@ -1,93 +1,137 @@
-from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
+from typing import List, Optional, Dict
 from decimal import Decimal
-
-from core.dependencies import get_menu_service, get_producto_repo
-from api.v1.schemas.producto import ProductoIn, ProductoOut, TamanoProductoEnum
-from services.menu_service import MenuService
-from domain.models import Producto as ProductoDomain, TamanoProducto
-
-router = APIRouter(prefix="/productos", tags=["productos"])
+from domain.models import Producto, Categoria, TipoCategoria
+from repositories.interfaces import IProductoRepository, ICategoriaRepository
 
 
-@router.get("/", response_model=List[ProductoOut])
-def listar_productos(menu: MenuService = Depends(get_menu_service)):
-    productos = menu._producto_repo.obtener_todos()
-    return [ProductoOut.model_validate(p, from_attributes=True) for p in productos]
+class MenuService:
+    def __init__(self, producto_repo: IProductoRepository, categoria_repo: ICategoriaRepository):
+        self._producto_repo = producto_repo
+        self._categoria_repo = categoria_repo
 
+    def obtener_menu_completo(self) -> Dict[str, List[Producto]]:
+        categorias = self._categoria_repo.obtener_activas()
+        productos = self._producto_repo.obtener_disponibles()
+        menu: Dict[str, List[Producto]] = {}
+        for categoria in categorias:
+            productos_categoria = [p for p in productos if p.categoria_id == categoria.id]
+            if productos_categoria:
+                menu[categoria.nombre] = productos_categoria
+        return menu
 
-@router.get("/{producto_id}", response_model=ProductoOut)
-def obtener_producto(producto_id: int, menu: MenuService = Depends(get_menu_service)):
-    p = menu._producto_repo.obtener_por_id(producto_id)
-    if not p:
-        raise HTTPException(status_code=404, detail="Producto no encontrado")
-    return ProductoOut.model_validate(p, from_attributes=True)
+    def buscar_productos(self, termino: str) -> List[Producto]:
+        return self._producto_repo.buscar_por_nombre(termino)
 
+    def obtener_productos_por_categoria(self, categoria_id: int) -> List[Producto]:
+        productos = self._producto_repo.obtener_por_categoria(categoria_id)
+        return [p for p in productos if p.disponible]
 
-@router.get("/search", response_model=List[ProductoOut])
-def buscar_productos(q: str = Query(..., min_length=1), menu: MenuService = Depends(get_menu_service)):
-    productos = menu.buscar_productos(q)
-    return [ProductoOut.model_validate(p, from_attributes=True) for p in productos]
+    def obtener_productos_por_tipo_categoria(self, tipo: TipoCategoria) -> List[Producto]:
+        categorias = self._categoria_repo.obtener_por_tipo(tipo)
+        productos: List[Producto] = []
+        for categoria in categorias:
+            if categoria.activa:
+                productos_categoria = self.obtener_productos_por_categoria(categoria.id)
+                productos.extend(productos_categoria)
+        return productos
 
+    def obtener_producto_detalle(self, producto_id: int) -> Optional[Dict]:
+        producto = self._producto_repo.obtener_por_id(producto_id)
+        if not producto:
+            return None
+        categoria = self._categoria_repo.obtener_por_id(producto.categoria_id)
+        return {
+            "producto": producto,
+            "categoria": categoria,
+            "ingredientes": producto.ingredientes,
+            "informacion_nutricional": {
+                "calorias": producto.calorias or "No disponible",
+            },
+        }
 
-@router.get("/{producto_id}/similares", response_model=List[ProductoOut])
-def similares(producto_id: int, menu: MenuService = Depends(get_menu_service)):
-    items = menu.recomendar_productos_similares(producto_id)
-    return [ProductoOut.model_validate(p, from_attributes=True) for p in items]
+    def filtrar_productos_por_precio(
+        self,
+        precio_min: Optional[Decimal] = None,
+        precio_max: Optional[Decimal] = None,
+    ) -> List[Producto]:
+        productos = self._producto_repo.obtener_disponibles()
+        if precio_min is not None:
+            productos = [p for p in productos if p.precio >= precio_min]
+        if precio_max is not None:
+            productos = [p for p in productos if p.precio <= precio_max]
+        return productos
 
+    def obtener_productos_por_calorias(self, max_calorias: int) -> List[Producto]:
+        productos = self._producto_repo.obtener_disponibles()
+        return [p for p in productos if p.calorias and p.calorias <= max_calorias]
 
-@router.post("/", response_model=ProductoOut, status_code=201)
-def crear_producto(data: ProductoIn, menu: MenuService = Depends(get_menu_service)):
-    existentes = menu._producto_repo.obtener_todos()
-    next_id = max([p.id for p in existentes], default=0) + 1
-    tamano = None
-    if data.tamano is not None:
-        tamano = TamanoProducto(data.tamano.value)
-    nuevo = ProductoDomain(
-        id=next_id,
-        nombre=data.nombre,
-        descripcion=data.descripcion,
-        precio=Decimal(str(data.precio)),
-        categoria_id=data.categoria_id,
-        disponible=data.disponible,
-        tamano=tamano,
-        ingredientes=data.ingredientes or [],
-        calorias=data.calorias,
-    )
-    ok = menu._producto_repo.agregar(nuevo)
-    if not ok:
-        raise HTTPException(status_code=400, detail="No se pudo crear el producto")
-    return ProductoOut.model_validate(nuevo, from_attributes=True)
+    def obtener_estadisticas_menu(self) -> Dict:
+        productos = self._producto_repo.obtener_todos()
+        productos_disponibles = self._producto_repo.obtener_disponibles()
+        categorias = self._categoria_repo.obtener_todas()
+        categorias_activas = self._categoria_repo.obtener_activas()
 
+        precios = [p.precio for p in productos_disponibles]
+        precio_promedio = sum(precios) / len(precios) if precios else 0
 
-@router.put("/{producto_id}", response_model=ProductoOut)
-def actualizar_producto(producto_id: int, data: ProductoIn, menu: MenuService = Depends(get_menu_service)):
-    actual = menu._producto_repo.obtener_por_id(producto_id)
-    if not actual:
-        raise HTTPException(status_code=404, detail="Producto no encontrado")
-    tamano = None
-    if data.tamano is not None:
-        tamano = TamanoProducto(data.tamano.value)
-    actualizado = ProductoDomain(
-        id=producto_id,
-        nombre=data.nombre,
-        descripcion=data.descripcion,
-        precio=Decimal(str(data.precio)),
-        categoria_id=data.categoria_id,
-        disponible=data.disponible,
-        tamano=tamano,
-        ingredientes=data.ingredientes or [],
-        calorias=data.calorias,
-    )
-    ok = menu._producto_repo.actualizar(actualizado)
-    if not ok:
-        raise HTTPException(status_code=400, detail="No se pudo actualizar el producto")
-    return ProductoOut.model_validate(actualizado, from_attributes=True)
+        producto_mas_caro = (
+            max(productos_disponibles, key=lambda p: p.precio)
+            if productos_disponibles else None
+        )
+        producto_mas_barato = (
+            min(productos_disponibles, key=lambda p: p.precio)
+            if productos_disponibles else None
+        )
 
+        productos_por_categoria: Dict[str, int] = {}
+        for categoria in categorias_activas:
+            count = len(self.obtener_productos_por_categoria(categoria.id))
+            if count > 0:
+                productos_por_categoria[categoria.nombre] = count
 
-@router.delete("/{producto_id}", status_code=204)
-def eliminar_producto(producto_id: int, menu: MenuService = Depends(get_menu_service)):
-    ok = menu._producto_repo.eliminar(producto_id)
-    if not ok:
-        raise HTTPException(status_code=404, detail="Producto no encontrado")
-    return None
+        return {
+            "total_productos": len(productos),
+            "productos_disponibles": len(productos_disponibles),
+            "total_categorias": len(categorias),
+            "categorias_activas": len(categorias_activas),
+            "precio_promedio": precio_promedio,
+            "producto_mas_caro": producto_mas_caro,
+            "producto_mas_barato": producto_mas_barato,
+            "productos_por_categoria": productos_por_categoria,
+        }
+
+    def obtener_todas_las_categorias(self) -> List[Categoria]:
+        return self._categoria_repo.obtener_activas()
+
+    def recomendar_productos_similares(self, producto_id: int, limite: int = 3) -> List[Producto]:
+        producto = self._producto_repo.obtener_por_id(producto_id)
+        if not producto:
+            return []
+        productos_similares = self.obtener_productos_por_categoria(producto.categoria_id)
+        productos_similares = [p for p in productos_similares if p.id != producto_id]
+        return productos_similares[:limite]
+
+    def filtrar_productos(
+        self,
+        min_price: Optional[Decimal] = None,
+        max_price: Optional[Decimal] = None,
+        categoria_id: Optional[int] = None,
+    ) -> List[Producto]:
+        """
+        NUEVO MÉTODO: filtra productos disponibles por:
+        - precio mínimo
+        - precio máximo
+        - categoría
+
+        Este es el que usarás desde el endpoint GET /productos.
+        """
+        productos = self._producto_repo.obtener_disponibles()
+
+        if min_price is not None:
+            productos = [p for p in productos if p.precio >= min_price]
+        if max_price is not None:
+            productos = [p for p in productos if p.precio <= max_price]
+        if categoria_id is not None:
+            productos = [p for p in productos if p.categoria_id == categoria_id]
+
+        return productos
