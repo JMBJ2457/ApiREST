@@ -4,7 +4,6 @@ Modelos SQLAlchemy para la base de datos
 from sqlalchemy import Column, Integer, String, Boolean, Float, ForeignKey, Text, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from decimal import Decimal
 
 Base = declarative_base()
 

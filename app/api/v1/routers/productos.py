@@ -1,9 +1,9 @@
-from typing import List, Optional
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from decimal import Decimal
 
-from core.dependencies import get_menu_service, get_producto_repo
-from api.v1.schemas.producto import ProductoIn, ProductoOut, TamanoProductoEnum
+from core.dependencies import get_menu_service
+from api.v1.schemas.producto import ProductoIn, ProductoOut
 from services.menu_service import MenuService
 from domain.models import Producto as ProductoDomain, TamanoProducto
 

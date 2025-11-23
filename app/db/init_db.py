@@ -1,7 +1,6 @@
 """
 Script para inicializar la base de datos con datos de ejemplo
 """
-from decimal import Decimal
 from db.session import init_db, SessionLocal
 from db.models import CategoriaModel, ProductoModel
 from domain.models import TipoCategoria, TamanoProducto
