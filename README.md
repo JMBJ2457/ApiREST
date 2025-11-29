@@ -21,7 +21,7 @@ app/
 ├── repositories/        # Contratos e implementaciones de persistencia
 ├── services/            # Lógica de negocio / casos de uso
 ├── data/                # Datos JSON (cuando REPO_BACKEND=file) o SQLite (cuando REPO_BACKEND=database)
-├── frontend/                # ***Nueva: Interfaz gráfica moderna***
+├── frontend/                # ***Nueva: Interfaz gráfica moderna***  
 │   ├── index.html           # Vista principal del menú
 │   ├── admin.html           # Panel de administración (CRUD)
 │   ├── styles.css           # Estilos modernos (dark UI)
@@ -230,6 +230,7 @@ def llamar_servicio_externo():
 - **FileRepository**: Protege operaciones de lectura/escritura de archivos JSON
 - **DatabaseRepository**: Protege operaciones de base de datos contra `SQLAlchemyError`, `OperationalError` y `TimeoutError`
 
+
 ## Event Sourcing y Auditoría de Cambios
 
 El proyecto incorpora un **Event Store** para registrar todos los cambios relevantes sobre productos y categorías.
@@ -260,6 +261,87 @@ Estos eventos permiten auditar el historial completo de un agregado y realizar o
   - `POST /api/v1/eventos/rollback/*` para ejecutar distintas estrategias de rollback.
 
 Este diseño mantiene las tablas de productos/categorías como modelo de lectura principal, pero añade una capa de Event Sourcing para auditoría detallada y recuperación de estados anteriores.
+
+## Patrón SAGA: Eliminación de Categorías con Productos
+
+Este proyecto implementa el **patrón SAGA (Saga Orchestration Pattern)** para garantizar la **atomicidad** y **consistencia** al eliminar categorías que contienen productos.
+
+Cuando se elimina una categoría con productos asociados, los productos se mueven a otra categoría destino y, si algún paso falla, todos los cambios se revierten automáticamente mediante operaciones de compensación.
+
+### ¿Qué se implementó?
+
+Funcionalidad principal:
+
+- Eliminación segura de categorías con productos.
+- Compensación automática ante fallos.
+- Integración en el endpoint estándar `DELETE /api/v1/categorias/{id}` con el parámetro opcional `categoria_destino_id`.
+
+Componentes principales:
+
+1. `SagaOrchestrator` (`app/saga/orchestrator.py`):
+   - Orquestador genérico que ejecuta pasos secuenciales.
+   - Maneja la compensación automática en orden inverso.
+   - Proporciona logging detallado y rastreo de estado.
+
+2. `CategoriaSagaService` (`app/services/categoria_saga_service.py`):
+   - Servicio específico que implementa la lógica de negocio.
+   - Define los pasos del SAGA para eliminar categorías.
+   - Implementa las funciones de compensación.
+
+3. Endpoint integrado (`app/api/v1/routers/categorias.py`):
+   - Endpoint `DELETE /api/v1/categorias/{id}?categoria_destino_id={destino}`.
+   - Maneja tanto la eliminación simple como la eliminación moviendo productos mediante SAGA.
+
+### Descripción del patrón SAGA
+
+El patrón SAGA se utiliza para manejar **operaciones multi-paso** que no pueden resolverse con una única transacción ACID.
+En lugar de un rollback global, cada paso tiene una **operación de compensación** que deshace sus cambios si ocurre un fallo.
+
+Principios clave:
+
+- Operaciones multi-paso.
+- Compensación en lugar de rollback tradicional.
+- Ejecución secuencial de pasos.
+- Compensación automática en orden inverso cuando un paso falla.
+
+### Flujo del SAGA en este proyecto
+
+Caso de uso: eliminar una categoría con productos, moviéndolos a otra categoría destino.
+
+Pasos del SAGA (`CategoriaSagaService.eliminar_categoria_con_productos`):
+
+1. **Validar destino**:
+   - Verifica que la categoría destino existe y está activa.
+   - No requiere compensación (solo validación).
+
+2. **Mover productos**:
+   - Cambia el `categoria_id` de cada producto desde la categoría original a la categoría destino.
+   - Compensación: revertir cada producto a su `categoria_id` original.
+
+3. **Eliminar categoría**:
+   - Elimina la categoría original.
+   - Compensación: recrear la categoría con sus datos originales.
+
+Si cualquier paso falla, el orquestador ejecuta automáticamente las operaciones de compensación en orden inverso, restaurando el estado original.
+
+### Garantías del SAGA
+
+- **Atomicidad**: o se completan todos los pasos o ninguno tiene efecto permanente.
+- **Consistencia**: ante fallos, el sistema vuelve a un estado consistente.
+- **Trazabilidad**: cada operación tiene un `saga_id` y se generan logs detallados.
+- **Recuperación automática**: la compensación no requiere intervención manual.
+
+### Ejemplo de uso (API)
+
+Eliminar una categoría moviendo previamente sus productos a otra categoría:
+
+```bash
+DELETE /api/v1/categorias/7?categoria_destino_id=1
+```
+
+### Resumen
+
+La funcionalidad SAGA está integrada en el endpoint estándar de eliminación de categorías, haciendo la API más segura y consistente sin añadir nuevos endpoints específicos.
 
 ## Acceso al Frontend
 

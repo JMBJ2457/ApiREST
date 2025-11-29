@@ -14,6 +14,15 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
+# ----------------------------
+# Configuración de Logging
+# ----------------------------
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
 app = FastAPI(
     title="Cafetería API",
     version="1.0.0",
