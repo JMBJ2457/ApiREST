@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+.venv/
+venv/
+ENV/
+.Python
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# OS / Misc
+.DS_Store
+*.log
+
+# VCS
+.git/
+.gitignore
+
+# Docker/Compose
+Dockerfile*
+**/Dockerfile*
+**/docker-compose*.yml
+
+# Node (por si acaso)
+node_modules/
+
+# Entornos
+.env
+.env.*
