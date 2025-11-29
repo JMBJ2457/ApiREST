@@ -4,6 +4,7 @@ from pydantic import BaseModel, ConfigDict
 
 class TipoCategoriaEnum(str, Enum):
     bebidas_calientes = "bebidas_calientes"
+    bebidas_muy_calientes = "bebidas_muy_calientes"
     bebidas_frias = "bebidas_frias"
     postres = "postres"
     snacks = "snacks"

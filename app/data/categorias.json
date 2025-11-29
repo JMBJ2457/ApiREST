@@ -40,5 +40,12 @@
     "descripcion": "Sandwiches, ensaladas y comidas principales",
     "tipo": "almuerzo",
     "activa": true
+  },
+  {
+    "id": 7,
+    "nombre": "Bebidas Muy Calientes",
+    "descripcion": "Bebidas extra calientes y especiales servidas a alta temperatura",
+    "tipo": "bebidas_muy_calientes",
+    "activa": true
   }
 ]
