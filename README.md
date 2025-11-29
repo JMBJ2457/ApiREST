@@ -4,31 +4,50 @@ API REST construida con FastAPI siguiendo principios SOLID y arquitectura limpia
 
 ## Estructura
 
-```
-
+```python
 app/
 ├── api/                 # Capa HTTP
 │   ├── routers/         # Endpoints (FastAPI Routers)
+│   │   ├── categorias.py    # CRUD de categorías + integración SAGA
+│   │   ├── productos.py     # CRUD de productos
+│   │   ├── menu.py          # Menú y estadísticas
+│   │   └── eventos.py       # Endpoints de Event Store y rollback
 │   └── schemas/         # Esquemas Pydantic (I/O)
 ├── core/                # Configuración y wiring
 │   ├── config.py        # Settings (pydantic-settings, .env)
-│   ├── dependencies.py  # Inyección de dependencias
+│   ├── dependencies.py  # Inyección de dependencias (repos, Event Store, etc.)
 │   └── circuit_breaker.py  # Implementación del Circuit Breaker
 ├── db/                  # Base de datos
-│   ├── models.py        # Modelos SQLAlchemy
-│   └── session.py       # Configuración de sesión SQLite
+│   ├── models.py        # Modelos SQLAlchemy (productos, categorías)
+│   ├── session.py       # Configuración de sesión SQLite
+│   └── event_store_model.py  # Modelos de Event Store y snapshots
 ├── domain/              # Modelos de dominio (dataclasses, enums)
 ├── repositories/        # Contratos e implementaciones de persistencia
+│   ├── interfaces.py            # Interfaces de repositorio
+│   ├── memory_repository.py     # Implementación en memoria
+│   ├── file_repository.py       # Implementación basada en JSON
+│   ├── database_repository.py   # Implementación basada en SQLite
+│   └── event_sourced_repository.py  # Wrappers con Event Sourcing
 ├── services/            # Lógica de negocio / casos de uso
+│   ├── menu_service.py          # Casos de uso principales
+│   └── categoria_saga_service.py  # Caso de uso SAGA para categorías
+├── saga/                # Infraestructura del patrón SAGA
+│   ├── orchestrator.py  # Orquestador genérico de SAGA
+│   └── README.md        # Documentación técnica del SAGA
+├── events/              # Infraestructura de Event Sourcing
+│   ├── domain_events.py # Eventos de dominio (producto, categoría, saga, rollback)
+│   ├── event_store.py   # Event Store (lectura/escritura de eventos y snapshots)
+│   └── rollback_service.py  # Servicio de rollback basado en eventos
 ├── data/                # Datos JSON (cuando REPO_BACKEND=file) o SQLite (cuando REPO_BACKEND=database)
-├── frontend/                # ***Nueva: Interfaz gráfica moderna***  
+├── frontend/                # Interfaz gráfica moderna  
 │   ├── index.html           # Vista principal del menú
 │   ├── admin.html           # Panel de administración (CRUD)
 │   ├── styles.css           # Estilos modernos (dark UI)
 │   ├── app.js               # Lógica del cliente (lista productos)
 │   └── admin.js             # CRUD de productos (UI administrador)
-├── main.py              # Instancia FastAPI + montaje de routers
-└── requirements.txt     # Dependencias de la app
+├── main.py              # Instancia FastAPI + montaje de routers y frontend
+├── requirements.txt     # Dependencias de la app
+└── test_event_sourcing.py  # Script de prueba/manual de Event Sourcing
 ```
 
 ## Configuración
