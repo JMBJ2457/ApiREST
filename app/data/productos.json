@@ -7,7 +7,10 @@
     "categoria_id": 1,
     "disponible": true,
     "tamano": "mediano",
-    "ingredientes": ["Café molido", "Agua filtrada"],
+    "ingredientes": [
+      "Café molido",
+      "Agua filtrada"
+    ],
     "calorias": 5
   },
   {
@@ -18,7 +21,11 @@
     "categoria_id": 1,
     "disponible": true,
     "tamano": "grande",
-    "ingredientes": ["Café expreso", "Leche fresca", "Espuma de leche"],
+    "ingredientes": [
+      "Café expreso",
+      "Leche fresca",
+      "Espuma de leche"
+    ],
     "calorias": 120
   },
   {
@@ -29,7 +36,11 @@
     "categoria_id": 1,
     "disponible": true,
     "tamano": "grande",
-    "ingredientes": ["Café expreso", "Leche fresca", "Un toque de espuma"],
+    "ingredientes": [
+      "Café expreso",
+      "Leche fresca",
+      "Un toque de espuma"
+    ],
     "calorias": 150
   },
   {
@@ -40,7 +51,12 @@
     "categoria_id": 1,
     "disponible": true,
     "tamano": "grande",
-    "ingredientes": ["Café expreso", "Chocolate", "Leche", "Crema batida"],
+    "ingredientes": [
+      "Café expreso",
+      "Chocolate",
+      "Leche",
+      "Crema batida"
+    ],
     "calorias": 290
   },
   {
@@ -51,7 +67,10 @@
     "categoria_id": 1,
     "disponible": true,
     "tamano": "mediano",
-    "ingredientes": ["Hojas de té verde", "Agua caliente"],
+    "ingredientes": [
+      "Hojas de té verde",
+      "Agua caliente"
+    ],
     "calorias": 2
   },
   {
@@ -62,7 +81,13 @@
     "categoria_id": 2,
     "disponible": true,
     "tamano": "grande",
-    "ingredientes": ["Café frío", "Chocolate", "Hielo", "Crema batida", "Jarabe de chocolate"],
+    "ingredientes": [
+      "Café frío",
+      "Chocolate",
+      "Hielo",
+      "Crema batida",
+      "Jarabe de chocolate"
+    ],
     "calorias": 320
   },
   {
@@ -73,7 +98,9 @@
     "categoria_id": 2,
     "disponible": true,
     "tamano": "mediano",
-    "ingredientes": ["Naranjas frescas"],
+    "ingredientes": [
+      "Naranjas frescas"
+    ],
     "calorias": 110
   },
   {
@@ -84,7 +111,12 @@
     "categoria_id": 2,
     "disponible": true,
     "tamano": "grande",
-    "ingredientes": ["Fresas frescas", "Yogur natural", "Miel", "Hielo"],
+    "ingredientes": [
+      "Fresas frescas",
+      "Yogur natural",
+      "Miel",
+      "Hielo"
+    ],
     "calorias": 180
   },
   {
@@ -95,7 +127,13 @@
     "categoria_id": 2,
     "disponible": true,
     "tamano": "mediano",
-    "ingredientes": ["Limón fresco", "Agua", "Azúcar", "Menta", "Hielo"],
+    "ingredientes": [
+      "Limón fresco",
+      "Agua",
+      "Azúcar",
+      "Menta",
+      "Hielo"
+    ],
     "calorias": 95
   },
   {
@@ -106,7 +144,13 @@
     "categoria_id": 3,
     "disponible": false,
     "tamano": null,
-    "ingredientes": ["Queso crema", "Fresas", "Galletas graham", "Azúcar", "Huevos"],
+    "ingredientes": [
+      "Queso crema",
+      "Fresas",
+      "Galletas graham",
+      "Azúcar",
+      "Huevos"
+    ],
     "calorias": 410
   },
   {
@@ -117,7 +161,13 @@
     "categoria_id": 3,
     "disponible": true,
     "tamano": null,
-    "ingredientes": ["Chocolate negro", "Mantequilla", "Huevos", "Harina", "Nueces"],
+    "ingredientes": [
+      "Chocolate negro",
+      "Mantequilla",
+      "Huevos",
+      "Harina",
+      "Nueces"
+    ],
     "calorias": 350
   },
   {
@@ -128,7 +178,13 @@
     "categoria_id": 3,
     "disponible": true,
     "tamano": null,
-    "ingredientes": ["Mascarpone", "Café expreso", "Bizcochos", "Cacao", "Licor"],
+    "ingredientes": [
+      "Mascarpone",
+      "Café expreso",
+      "Bizcochos",
+      "Cacao",
+      "Licor"
+    ],
     "calorias": 450
   },
   {
@@ -139,7 +195,13 @@
     "categoria_id": 4,
     "disponible": true,
     "tamano": null,
-    "ingredientes": ["Harina", "Arándanos", "Huevos", "Mantequilla", "Azúcar"],
+    "ingredientes": [
+      "Harina",
+      "Arándanos",
+      "Huevos",
+      "Mantequilla",
+      "Azúcar"
+    ],
     "calorias": 280
   },
   {
@@ -150,7 +212,13 @@
     "categoria_id": 4,
     "disponible": true,
     "tamano": null,
-    "ingredientes": ["Avena", "Pasas", "Harina", "Mantequilla", "Canela"],
+    "ingredientes": [
+      "Avena",
+      "Pasas",
+      "Harina",
+      "Mantequilla",
+      "Canela"
+    ],
     "calorias": 160
   },
   {
@@ -161,7 +229,12 @@
     "categoria_id": 5,
     "disponible": true,
     "tamano": null,
-    "ingredientes": ["Harina", "Mantequilla", "Huevos", "Levadura"],
+    "ingredientes": [
+      "Harina",
+      "Mantequilla",
+      "Huevos",
+      "Levadura"
+    ],
     "calorias": 231
   },
   {
@@ -172,7 +245,13 @@
     "categoria_id": 5,
     "disponible": true,
     "tamano": null,
-    "ingredientes": ["Pan brioche", "Huevos", "Leche", "Canela", "Jarabe de maple"],
+    "ingredientes": [
+      "Pan brioche",
+      "Huevos",
+      "Leche",
+      "Canela",
+      "Jarabe de maple"
+    ],
     "calorias": 320
   },
   {
@@ -183,7 +262,14 @@
     "categoria_id": 6,
     "disponible": true,
     "tamano": null,
-    "ingredientes": ["Pan integral", "Pollo a la parrilla", "Tocino", "Lechuga", "Tomate", "Mayonesa"],
+    "ingredientes": [
+      "Pan integral",
+      "Pollo a la parrilla",
+      "Tocino",
+      "Lechuga",
+      "Tomate",
+      "Mayonesa"
+    ],
     "calorias": 520
   },
   {
@@ -194,7 +280,13 @@
     "categoria_id": 6,
     "disponible": true,
     "tamano": null,
-    "ingredientes": ["Lechuga romana", "Pollo", "Crutones", "Queso parmesano", "Aderezo césar"],
+    "ingredientes": [
+      "Lechuga romana",
+      "Pollo",
+      "Crutones",
+      "Queso parmesano",
+      "Aderezo césar"
+    ],
     "calorias": 380
   },
   {
@@ -205,7 +297,13 @@
     "categoria_id": 6,
     "disponible": true,
     "tamano": null,
-    "ingredientes": ["Pan ciabatta", "Jamón serrano", "Queso suizo", "Tomate", "Rúcula"],
+    "ingredientes": [
+      "Pan ciabatta",
+      "Jamón serrano",
+      "Queso suizo",
+      "Tomate",
+      "Rúcula"
+    ],
     "calorias": 420
   },
   {
@@ -216,7 +314,123 @@
     "categoria_id": 6,
     "disponible": true,
     "tamano": null,
-    "ingredientes": ["Tortilla integral", "Hummus", "Pepino", "Zanahoria", "Lechuga", "Pimiento"],
+    "ingredientes": [
+      "Tortilla integral",
+      "Hummus",
+      "Pepino",
+      "Zanahoria",
+      "Lechuga",
+      "Pimiento"
+    ],
     "calorias": 290
+  },
+  {
+    "id": 21,
+    "nombre": "Jugo Verde",
+    "descripcion": "Bebida fria",
+    "precio": 20.0,
+    "categoria_id": 2,
+    "disponible": true,
+    "tamano": null,
+    "ingredientes": [],
+    "calorias": null
+  },
+  {
+    "id": 22,
+    "nombre": "Café Expreso Doble",
+    "descripcion": "Doble shot de café expreso intenso servido muy caliente",
+    "precio": 3.5,
+    "categoria_id": 7,
+    "disponible": true,
+    "tamano": "pequeño",
+    "ingredientes": [
+      "Café expreso doble",
+      "Agua caliente"
+    ],
+    "calorias": 10
+  },
+  {
+    "id": 23,
+    "nombre": "Té Chai Caliente",
+    "descripcion": "Té chai especiado con leche vaporizada y especias aromáticas",
+    "precio": 4.2,
+    "categoria_id": 7,
+    "disponible": true,
+    "tamano": "grande",
+    "ingredientes": [
+      "Té negro",
+      "Leche vaporizada",
+      "Canela",
+      "Cardamomo",
+      "Jengibre",
+      "Clavo"
+    ],
+    "calorias": 140
+  },
+  {
+    "id": 24,
+    "nombre": "Chocolate Caliente Premium",
+    "descripcion": "Chocolate belga derretido con leche espumosa y crema batida",
+    "precio": 5.0,
+    "categoria_id": 7,
+    "disponible": true,
+    "tamano": "grande",
+    "ingredientes": [
+      "Chocolate belga 70% cacao",
+      "Leche entera",
+      "Crema batida",
+      "Marshmallows",
+      "Canela"
+    ],
+    "calorias": 320
+  },
+  {
+    "id": 25,
+    "nombre": "Café Turco",
+    "descripcion": "Café tradicional turco preparado en arena caliente, muy concentrado",
+    "precio": 3.8,
+    "categoria_id": 7,
+    "disponible": true,
+    "tamano": "pequeño",
+    "ingredientes": [
+      "Café molido extra fino",
+      "Agua",
+      "Azúcar",
+      "Cardamomo"
+    ],
+    "calorias": 15
+  },
+  {
+    "id": 26,
+    "nombre": "Matcha Latte Caliente",
+    "descripcion": "Matcha premium japonés con leche vaporizada y espuma cremosa",
+    "precio": 4.8,
+    "categoria_id": 7,
+    "disponible": true,
+    "tamano": "grande",
+    "ingredientes": [
+      "Matcha premium",
+      "Leche vaporizada",
+      "Miel",
+      "Vainilla"
+    ],
+    "calorias": 180
+  },
+  {
+    "id": 27,
+    "nombre": "Café Irlandés",
+    "descripcion": "Café caliente con whisky irlandés, crema batida y azúcar morena",
+    "precio": 6.5,
+    "categoria_id": 7,
+    "disponible": true,
+    "tamano": "grande",
+    "ingredientes": [
+      "Café expreso",
+      "Whisky irlandés",
+      "Crema batida",
+      "Azúcar morena",
+      "Canela"
+    ],
+    "calorias": 250
   }
 ]

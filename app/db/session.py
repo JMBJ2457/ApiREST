@@ -40,5 +40,7 @@ def get_db() -> Session:
 def init_db():
     """Inicializa las tablas en la base de datos"""
     from db.models import Base
+    from db.event_store_model import Base as EventStoreBase
     Base.metadata.create_all(bind=engine)
+    EventStoreBase.metadata.create_all(bind=engine)
 

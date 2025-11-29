@@ -1,8 +1,18 @@
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from api.v1.routers import productos, categorias, menu
+from api.v1.routers import productos, categorias, menu, eventos
+
+# ----------------------------
+# Configuración de Logging
+# ----------------------------
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 app = FastAPI(
     title="Cafetería API",
@@ -29,6 +39,7 @@ API_PREFIX = "/api/v1"
 app.include_router(menu.router, prefix=API_PREFIX)
 app.include_router(categorias.router, prefix=API_PREFIX)
 app.include_router(productos.router, prefix=API_PREFIX)
+app.include_router(eventos.router, prefix=API_PREFIX)
 
 
 # Servir interfaz gráfica 

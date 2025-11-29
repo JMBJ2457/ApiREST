@@ -6,6 +6,7 @@ from decimal import Decimal
 
 class TipoCategoria(Enum):
     BEBIDAS_CALIENTES = "bebidas_calientes"
+    BEBIDAS_MUY_CALIENTES = "bebidas_muy_calientes"
     BEBIDAS_FRIAS = "bebidas_frias"
     POSTRES = "postres"
     SNACKS = "snacks"

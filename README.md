@@ -230,6 +230,36 @@ def llamar_servicio_externo():
 - **FileRepository**: Protege operaciones de lectura/escritura de archivos JSON
 - **DatabaseRepository**: Protege operaciones de base de datos contra `SQLAlchemyError`, `OperationalError` y `TimeoutError`
 
+## Event Sourcing y Auditoría de Cambios
+
+El proyecto incorpora un **Event Store** para registrar todos los cambios relevantes sobre productos y categorías.
+Estos eventos permiten auditar el historial completo de un agregado y realizar operaciones de rollback.
+
+### Componentes principales
+
+- **Event Store** (`db/event_store_model.py`, `events/event_store.py`):
+  - Tabla `event_store` donde cada fila es un evento inmutable.
+  - Tabla `snapshots` para guardar estados agregados y optimizar reconstrucciones.
+  - API para consultar eventos por agregado, tipo, usuario, rango de tiempo y estadísticas.
+
+- **Eventos de dominio** (`events/domain_events.py`):
+  - `DomainEvent` base y eventos concretos para productos, categorías, sagas y rollbacks.
+  - Cada evento incluye `event_id`, `aggregate_id`, `aggregate_type`, `timestamp`, `user_id` y `metadata` con los datos del cambio.
+
+- **Repositorios con Event Sourcing** (`repositories/event_sourced_repository.py`):
+  - `EventSourcedProductoRepository` y `EventSourcedCategoriaRepository` envuelven a los repositorios base.
+  - Toda operación de creación, actualización o eliminación registra un evento de dominio asociado.
+
+- **Servicio de Rollback** (`events/rollback_service.py`):
+  - Permite revertir cambios usando solo el historial de eventos.
+  - Soporta rollback hasta un evento concreto, hasta un timestamp o de los últimos N eventos.
+  - Reconstruye el estado de un agregado aplicando la secuencia de eventos.
+
+- **API de eventos y rollback** (`api/v1/routers/eventos.py`):
+  - `GET /api/v1/eventos` y variantes para consultar eventos, historial y estadísticas.
+  - `POST /api/v1/eventos/rollback/*` para ejecutar distintas estrategias de rollback.
+
+Este diseño mantiene las tablas de productos/categorías como modelo de lectura principal, pero añade una capa de Event Sourcing para auditoría detallada y recuperación de estados anteriores.
 
 ## Acceso al Frontend
 
@@ -237,7 +267,6 @@ La aplicación incluye una UI moderna que se monta automáticamente desde FastAP
 
 - Menú principal (vista del cliente)
 - http://127.0.0.1:8000/ui
-
 
 - Permite:
 
@@ -258,10 +287,3 @@ La aplicación incluye una UI moderna que se monta automáticamente desde FastAP
 - Editar productos
 
 - Eliminar productos
-
-## Futuras extensiones
-
-- Tests unitarios y de integración.
-- Migraciones de base de datos con Alembic.
-- Soporte para otras bases de datos (PostgreSQL, MySQL).
-
