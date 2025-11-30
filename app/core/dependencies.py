@@ -29,7 +29,6 @@ from repositories.database_repository import (
 from services.menu_service import MenuService
 from repositories.interfaces import IProductoRepository, ICategoriaRepository
 from core.config import get_settings
-from db.session import get_db
 
 def get_repositorios(db: Session = None) -> Tuple[IProductoRepository, ICategoriaRepository]:
     settings = get_settings()
